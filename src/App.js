@@ -4,7 +4,7 @@ import { io } from 'socket.io-client';
 
 import './App.css';
 
-const socket = io('http://localhost:4000'); 
+const socket = io('https://hs-collaborative-whiteboard-backend.onrender.com'); 
 
 function App() {
   
