@@ -1,31 +1,30 @@
 import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react';
-import { Stage, Layer, Line, Rect, Circle } from 'react-konva'; // Import Rect and Circle components
+import { Stage, Layer, Line, Rect, Circle } from 'react-konva'; 
 import { io } from 'socket.io-client';
 
 import './App.css';
 
-const socket = io('http://localhost:4000'); // Connect to your backend
+const socket = io('http://localhost:4000'); 
 
 function App() {
-  // Renamed 'lines' to 'elements' to hold lines and shapes
+  
   const [elements, setElements] = useState([]);
   const isDrawing = useRef(false);
 
-  // Refs to track the current drawing action
-  const currentElementId = useRef(null); // Stores the unique ID of the element being drawn
-  const startPos = useRef({ x: 0, y: 0 }); // Stores the mouse position where drawing started for shapes
+ 
+  const currentElementId = useRef(null); 
+  const startPos = useRef({ x: 0, y: 0 }); 
 
   const stageRef = useRef(null);
   const canvasContainerRef = useRef(null);
 
-  // Added 'rect', 'circle' to tool options
-  const [tool, setTool] = useState('pen'); // 'pen', 'eraser', 'rect', 'circle'
-  const [color, setColor] = useState('#000000'); // Stroke color
+  const [tool, setTool] = useState('pen');
+  const [color, setColor] = useState('#000000'); 
   const [strokeWidth, setStrokeWidth] = useState(5);
-  // New: State for fill color (primarily for shapes)
+
   const [fillColor, setFillColor] = useState('transparent');
 
-  // User Identification States (unchanged)
+
   const [myUserId, setMyUserId] = useState(null);
   const [myUsername, setMyUsername] = useState('');
   const [myPresenceColor, setMyPresenceColor] = useState('');
@@ -67,46 +66,44 @@ function App() {
       });
     });
 
-    // --- Drawing History and Updates ---
-    // 'load-drawing' sends the full history of elements
+
     socket.on('load-drawing', (history) => {
       setElements(history);
     });
 
-    // 'element-update' handles adding new elements or updating existing ones in real-time
     socket.on('element-update', (updatedElement) => {
       setElements((prevElements) => {
         const existingIndex = prevElements.findIndex(el => el.id === updatedElement.id);
         if (existingIndex !== -1) {
-          // If element exists, update it (e.g., new points for line, new dimensions for shape)
+
           const newElements = [...prevElements];
-          newElements[existingIndex] = updatedElement; // Replace with the full updated object
+          newElements[existingIndex] = updatedElement; 
           return newElements;
         } else {
-          // If it's a new element (e.g., received a new shape start from another user)
+          
           return [...prevElements, updatedElement];
         }
       });
     });
 
     socket.on('clear-canvas', () => {
-      setElements([]); // Clear all elements
+      setElements([]);
     });
 
     return () => {
-      // Clean up all Socket.IO event listeners
+
       socket.off('current-user-info');
       socket.off('active-users-list');
       socket.off('user-connected');
       socket.off('user-updated');
       socket.off('user-disconnected');
       socket.off('load-drawing');
-      socket.off('element-update'); // New event name
+      socket.off('element-update'); 
       socket.off('clear-canvas');
     };
   }, []);
 
-  // --- Use useLayoutEffect for accurate canvas sizing based on container ---
+
   useLayoutEffect(() => {
     const updateCanvasDimensions = () => {
       if (canvasContainerRef.current) {
@@ -116,24 +113,23 @@ function App() {
         setStageHeight(newHeight);
       }
     };
-    updateCanvasDimensions(); // Set initial dimensions on mount
+    updateCanvasDimensions(); 
     window.addEventListener('resize', updateCanvasDimensions);
     return () => {
       window.removeEventListener('resize', updateCanvasDimensions);
     };
   }, [canvasContainerRef.current]);
 
-  // --- Drawing Handlers ---
   const handleMouseDown = (e) => {
     isDrawing.current = true;
-    startPos.current = e.target.getStage().getPointerPosition(); // Store start position for shapes
+    startPos.current = e.target.getStage().getPointerPosition(); 
     const id = Date.now(); // Unique ID for the new element
-    currentElementId.current = id; // Store ID of the element currently being drawn
+    currentElementId.current = id; 
 
     let newElement;
     const commonProps = {
       id,
-      tool, // Tool used to create it
+      tool, 
       userId: myUserId,
       username: myUsername,
       userColor: myPresenceColor,
@@ -407,7 +403,7 @@ function App() {
                     />
                   );
                 }
-                return null; // Fallback for unknown element types
+                return null; 
               })}
             </Layer>
           </Stage>
