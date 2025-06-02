@@ -1,38 +1,423 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* Basic Resets & Global Styles */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #e0e0e0;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  align-items: flex-start; /* Align app-container to the top */
+  min-height: 100vh; /* Ensure body takes full viewport height */
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column; /* Stack header, toolbar, and main content vertically */
+  align-items: center; /* Center children horizontally */
+  width: 100%;
+  max-width: 1200px; /* Max width for desktop */
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  box-sizing: border-box;
+  /* Ensure app-container fills most of the screen vertically */
+  min-height: calc(100vh - 40px);
+}
+
+/* Header */
+.app-header {
+  margin-bottom: 20px;
+  text-align: center;
+  width: 100%; /* Ensure header takes full width within app-container */
+}
+
+.app-header h1 {
+  font-size: 2.5rem;
+  color: #333;
+  margin: 0;
+  letter-spacing: -0.5px;
+  background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Toolbar */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+  gap: 15px; /* Space between toolbar items */
+  margin-bottom: 20px;
+  padding: 15px 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  align-items: center;
+  justify-content: center; /* Center items horizontally */
+  width: 100%; /* Take full width of parent */
+}
+
+/* User Info in Toolbar */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #e6f7ff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #cceeff;
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
+.user-info label {
+  font-weight: bold;
+  color: #0056b3;
+  white-space: nowrap;
+}
+
+.user-info input[type="text"] {
+  padding: 8px 10px;
+  border: 1px solid #add8e6;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  width: 120px; /* Fixed width for desktop username input */
+  flex-shrink: 1; /* Allow it to shrink if needed */
+}
+
+/* Presence Color Circle */
+.user-presence-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+
+.tool-button,
+.clear-button {
+  background-color: #007bff;
   color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 18px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0; /* Prevent buttons from shrinking too much */
 }
 
-.App-link {
-  color: #61dafb;
+.tool-button:hover,
+.clear-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.tool-button.active {
+  background-color: #28a745;
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.3);
+}
+
+.tool-button:disabled,
+.clear-button:disabled {
+  background-color: #cccccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.color-picker-container {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+input[type="color"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background-color: transparent;
+  cursor: pointer;
+  overflow: hidden;
+  padding: 0;
+  outline: none;
+  transition: transform 0.2s ease;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+input[type="color"]::-webkit-color-swatch {
+  border: 2px solid #ccc;
+  border-radius: 50%;
+}
+
+input[type="color"]::-moz-color-swatch-wrapper {
+  padding: 0;
+}
+
+input[type="color"]::-moz-color-swatch {
+  border: 2px solid #ccc;
+  border-radius: 50%;
+}
+
+input[type="color"]:hover {
+  transform: scale(1.05);
+}
+
+input[type="color"]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+.stroke-width-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #e9ecef;
+  padding: 8px 12px;
+  border-radius: 6px;
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
+.stroke-width-container label {
+  font-size: 0.95rem;
+  color: #555;
+  white-space: nowrap;
+}
+
+input[type="range"] {
+  width: 100px;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+  border-radius: 5px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #007bff;
+  cursor: pointer;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.3);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #007bff;
+  cursor: pointer;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.3);
+}
+
+.stroke-width-value {
+  font-weight: bold;
+  color: #333;
+  min-width: 40px;
+  text-align: right;
+}
+
+/* Main content area for canvas and user list */
+.canvas-main-content {
+  display: flex;
+  flex-direction: row; /* Default: sidebar left, canvas right */
+  flex-grow: 1; /* Crucial: Allows it to take available vertical space from app-container */
+  gap: 20px;
+  width: 100%; /* Take full width of its parent app-container */
+  /* Changed align-items to stretch to make children fill vertical space */
+  align-items: stretch;
+  justify-content: center; /* Center main content horizontally if there's extra space */
+}
+
+/* Active Users List (Sidebar) */
+.active-users-list {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  padding: 15px;
+  min-width: 180px; /* Minimum width for the sidebar */
+  max-width: 250px; /* Maximum width for the sidebar on larger screens */
+  max-height: 100%; /* Crucial: ensures it doesn't overflow its flex container vertically */
+  overflow-y: auto; /* Scroll if content exceeds max-height */
+  flex-shrink: 0; /* Prevents this sidebar from shrinking when other items need space */
+  box-sizing: border-box; /* Include padding in width calculation */
+}
+
+.active-users-list h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 1.1rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.active-users-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.active-users-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  color: #555;
+  font-size: 0.95rem;
+  border-bottom: 1px dashed #f0f0f0;
+}
+
+.active-users-list li:last-child {
+  border-bottom: none;
+}
+
+.active-users-list li.me {
+  font-weight: bold;
+  color: #007bff;
+}
+
+/* Canvas Container */
+.canvas-container {
+  display: flex;
+  justify-content: center; /* Center Konva stage horizontally within itself */
+  align-items: center; /* Center Konva stage vertically within itself */
+  flex-grow: 1; /* Allows it to take all remaining horizontal space */
+  flex-shrink: 1; /* Allows it to shrink if needed */
+  overflow: hidden; /* Ensures Konva elements don't spill out */
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  /* Removed fixed min-height for desktop, letting it stretch */
+}
+
+.konva-stage {
+  border: 1px solid #ddd;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  box-sizing: border-box;
+  /* Konva stage dimensions will be set by JS (useLayoutEffect) to fit its parent (.canvas-container) */
+  max-width: 100%; /* Ensure it doesn't overflow its own container */
+  max-height: 100%;
+}
+
+/* SR-ONLY for accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) { /* Tablets and smaller desktops */
+  .canvas-main-content {
+    flex-direction: column; /* Stack sidebar and canvas vertically */
+    align-items: center; /* Center items when stacked */
   }
-  to {
-    transform: rotate(360deg);
+  .active-users-list {
+    width: 100%; /* Take full width when stacked */
+    max-width: 400px; /* Limit max width for readability */
+    margin-bottom: 20px; /* Space between list and canvas when stacked */
+    max-height: 200px; /* Limit height when stacked, make it scrollable */
+  }
+  .canvas-container {
+    width: 100%; /* Canvas takes full width when stacked */
+    min-width: unset; /* Allow it to shrink naturally */
+    min-height: 60vh; /* Increased min-height for tablets, was 50vh */
+  }
+}
+
+@media (max-width: 768px) { /* Smaller Tablets / Large Mobile */
+  .app-header h1 {
+    font-size: 2rem;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch; /* Stretch toolbar items to fill width */
+    padding: 10px;
+    gap: 10px; /* Reduce gap on smaller screens */
+  }
+
+  .user-info {
+    flex-direction: row; /* Keep user info in a row */
+    justify-content: space-between; /* Distribute items horizontally */
+    align-items: center;
+    width: 100%; /* Ensure it takes full width */
+  }
+  .user-info input[type="text"] {
+    flex-grow: 1; /* Allow input to grow */
+    width: auto; /* Override fixed width */
+    max-width: unset; /* Remove max-width */
+  }
+
+  .tool-button,
+  .clear-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .color-picker-container,
+  .stroke-width-container {
+    width: 100%;
+    justify-content: center;
+  }
+
+  input[type="range"] {
+    width: calc(100% - 120px);
+  }
+
+  .stroke-width-value {
+    min-width: unset;
+  }
+}
+
+@media (max-width: 480px) { /* Mobile Phones */
+  .app-container {
+    padding: 10px;
+    border-radius: 0;
+    box-shadow: none;
+    min-height: 100vh; /* Make app-container fill full height on very small screens */
+  }
+
+  .app-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .canvas-container {
+    min-height: 55vh; /* Increased min-height for mobile, was 40vh */
   }
 }
