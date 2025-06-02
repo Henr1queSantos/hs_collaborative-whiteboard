@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/hs_collaborative-whiteboard/static/css/main.09b711fa.css",
+    "main.js": "/hs_collaborative-whiteboard/static/js/main.bc8ff288.js",
+    "static/js/453.182a0e94.chunk.js": "/hs_collaborative-whiteboard/static/js/453.182a0e94.chunk.js",
+    "index.html": "/hs_collaborative-whiteboard/index.html",
+    "main.09b711fa.css.map": "/hs_collaborative-whiteboard/static/css/main.09b711fa.css.map",
+    "main.bc8ff288.js.map": "/hs_collaborative-whiteboard/static/js/main.bc8ff288.js.map",
+    "453.182a0e94.chunk.js.map": "/hs_collaborative-whiteboard/static/js/453.182a0e94.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.09b711fa.css",
+    "static/js/main.bc8ff288.js"
+  ]
+}
